@@ -99,8 +99,8 @@ To get the safety button working, you must build ArduCopter with `hwdef_custom.d
 
 ```bash
 cd ~/ardupilot
-# Apply the active-low safety switch inversion patch
-git apply /home/verya/Ardupilot-Custom/micoair_h743v2_safety_invert.patch
+# Apply the active-low safety switch inversion and custom hold timings (3s / 1s) patch
+git apply /home/verya/Ardupilot-Custom/micoair_h743v2_safety_custom.patch
 
 # Copy the custom hardware definition
 cp /home/verya/Ardupilot-Custom/hwdef_custom.dat libraries/AP_HAL_ChibiOS/hwdef/MicoAir743v2/hwdef.dat

@@ -1,0 +1,42 @@
+diff --git a/libraries/AP_BoardConfig/AP_BoardConfig.cpp b/libraries/AP_BoardConfig/AP_BoardConfig.cpp
+index 74145f8d59..3c7ddb9969 100644
+--- a/libraries/AP_BoardConfig/AP_BoardConfig.cpp
++++ b/libraries/AP_BoardConfig/AP_BoardConfig.cpp
+@@ -616,16 +616,21 @@ void AP_BoardConfig::config_error(const char *fmt, ...)
+  */
+ bool AP_BoardConfig::safety_button_handle_pressed(uint8_t press_count)
+ {
+-    if (press_count != 10) {
++    AP_HAL::Util::safety_state safety_state = hal.util->safety_switch_state();
++    
++    // CUSTOM CHANGE: 3 seconds (30 ticks) to disable safety (Disarmed -> Armed)
++    // 1 second (10 ticks) to enable safety (Armed -> Disarmed)
++    uint8_t target_press_count = (safety_state == AP_HAL::Util::SAFETY_DISARMED) ? 30 : 10;
++    if (press_count != target_press_count) {
+         return false;
+     }
++
+     // get button options
+     uint16_t safety_options = get_safety_button_options();
+     if (!(safety_options & BOARD_SAFETY_OPTION_BUTTON_ACTIVE_ARMED) &&
+         hal.util->get_soft_armed()) {
+         return false;
+     }
+-    AP_HAL::Util::safety_state safety_state = hal.util->safety_switch_state();
+     if (safety_state == AP_HAL::Util::SAFETY_DISARMED &&
+         !(safety_options & BOARD_SAFETY_OPTION_BUTTON_ACTIVE_SAFETY_OFF)) {
+         return false;
+diff --git a/libraries/AP_HAL_ChibiOS/RCOutput.cpp b/libraries/AP_HAL_ChibiOS/RCOutput.cpp
+index eeb45f7c53..9883ac9dd8 100644
+--- a/libraries/AP_HAL_ChibiOS/RCOutput.cpp
++++ b/libraries/AP_HAL_ChibiOS/RCOutput.cpp
+@@ -2465,7 +2465,8 @@ void RCOutput::safety_update(void)
+ 
+ #ifdef HAL_GPIO_PIN_SAFETY_IN
+     // handle safety button
+-    bool safety_pressed = palReadLine(HAL_GPIO_PIN_SAFETY_IN);
++    // CUSTOM CHANGE: Invert logic for active-low (GND-triggered) safety switch
++    bool safety_pressed = !palReadLine(HAL_GPIO_PIN_SAFETY_IN);
+     if (safety_pressed) {
+         AP_BoardConfig *brdconfig = AP_BoardConfig::get_singleton();
+         if (safety_press_count < UINT8_MAX) {
