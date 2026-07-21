@@ -1,0 +1,71 @@
+# Mission Planner Parameter File
+# MicoAir H743 V2 — Custom ArduCopter Configuration
+# Equivalent to PX4 custom modifications
+#
+# HOW TO APPLY:
+#   Mission Planner → Config → Full Parameter List → Load from file
+#   Then: Write Params → Reboot
+#
+# IMPORTANT: Load this AFTER initial setup (compass/accel calibration).
+
+# ============================================================
+# GPS — u-blox M9N (CUAV Neo 3) on UART1/SERIAL1
+# ============================================================
+GPS1_TYPE,1          # u-blox (auto-detect)
+GPS1_RATE_MS,125     # 8Hz — avoids M9N 16-satellite hardware cap at >=10Hz
+SERIAL1_PROTOCOL,5   # GPS
+SERIAL1_BAUD,115     # 115200 baud
+
+# ============================================================
+# RANGEFINDER — TFmini (Benewake) on UART3/SERIAL3
+# ============================================================
+SERIAL3_PROTOCOL,9   # Rangefinder
+SERIAL3_BAUD,115     # 115200 baud
+RNGFND1_TYPE,20      # Benewake TFmini (serial)
+RNGFND1_MIN_CM,30    # Min range 30cm
+RNGFND1_MAX_CM,1200  # Max range 12m
+RNGFND1_ORIENT,25    # Downward-facing (down = 25)
+
+# ============================================================
+# SERIAL PORTS — Other ports (match PX4 custom mapping)
+# ============================================================
+SERIAL2_PROTOCOL,42  # MSP DisplayPort (OSD/HD VTX)
+SERIAL4_PROTOCOL,2   # MAVLink2 (companion computer / GCS)
+SERIAL6_PROTOCOL,23  # RCIN (UART6)
+SERIAL7_PROTOCOL,16  # ESC Telemetry (UART7, RX only)
+SERIAL8_PROTOCOL,2   # MAVLink2 (on-board Bluetooth UART8)
+SERIAL8_BAUD,115     # 115200 baud
+
+# ============================================================
+# SAFETY BUTTON — PB5, active-low (GND to trigger)
+# NOTE: Only works with custom firmware built from hwdef_custom.dat.
+# With stock firmware PB5 is UART5_RX and safety button does nothing.
+# ============================================================
+BRD_SAFETY_DEFLT,1   # Safety switch ON at boot (must press to arm)
+# BRD_SAFETYOPTION=3: press to disable safety + press again to re-enable
+BRD_SAFETYOPTION,3
+
+# ============================================================
+# MOTOR OUTPUT — DShot (matches removed DSHOT from PX4)
+# Set to 0 for standard PWM if not using DShot ESCs
+# ============================================================
+MOT_PWM_TYPE,6       # DShot300
+
+# ============================================================
+# OSD
+# ============================================================
+OSD_TYPE,1           # MAX7456 (AT7456E) onboard OSD
+OSD_TYPE2,5          # MSP DisplayPort (HD VTX on UART2)
+
+# ============================================================
+# EKF / Estimator — equivalent of PX4 EKF2 settings
+# ============================================================
+# Raise accel bias limit slightly to avoid false "high accel bias" warnings
+# (same issue as PX4 EKF2_ABL_LIM, ArduPilot EKF3 uses INS_ACCEL_FILTER)
+EK3_ACC_BIAS_LIM,0.6  # m/s^2 (default 0.5, raise slightly for MEMS sensors)
+
+# ============================================================
+# ARMING CHECKS — Supply voltage check bypass (same as PX4 CBRK_SUPPLY_CHK)
+# ============================================================
+ARMING_CHECK,1       # All checks enabled (set to -1 to bypass all, not recommended)
+
