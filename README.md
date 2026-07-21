@@ -95,11 +95,17 @@ Apply them via Mission Planner → Config → Full Parameter List → Load from 
 
 ## 4. Building Custom Firmware (for Safety Button on PB5)
 
-To get the safety button working, you must build ArduCopter with `hwdef_custom.dat`:
+To get the safety button working, you must build ArduCopter with `hwdef_custom.dat` and apply the safety switch inversion patch.
 
 ```bash
 cd ~/ardupilot
-cp /home/verya/Ardupilot/hwdef_custom.dat libraries/AP_HAL_ChibiOS/hwdef/MicoAir743v2/hwdef.dat
+# Apply the active-low safety switch inversion patch
+git apply /home/verya/Ardupilot-Custom/micoair_h743v2_safety_invert.patch
+
+# Copy the custom hardware definition
+cp /home/verya/Ardupilot-Custom/hwdef_custom.dat libraries/AP_HAL_ChibiOS/hwdef/MicoAir743v2/hwdef.dat
+
+# Configure and build
 ./waf configure --board MicoAir743v2
 ./waf copter
 # Output: build/MicoAir743v2/bin/arducopter.apj
