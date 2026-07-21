@@ -67,5 +67,4 @@ EK3_ACC_BIAS_LIM,0.6  # m/s^2 (default 0.5, raise slightly for MEMS sensors)
 # ============================================================
 # ARMING CHECKS — Supply voltage check bypass (same as PX4 CBRK_SUPPLY_CHK)
 # ============================================================
-ARMING_CHECK,1       # All checks enabled (set to -1 to bypass all, not recommended)
-
+ARMING_SKIPCHK,0     # 0 means skip no checks (ALL CHECKS ENABLED)
