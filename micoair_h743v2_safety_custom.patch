@@ -27,7 +27,7 @@ index 74145f8d59..3c7ddb9969 100644
          !(safety_options & BOARD_SAFETY_OPTION_BUTTON_ACTIVE_SAFETY_OFF)) {
          return false;
 diff --git a/libraries/AP_HAL_ChibiOS/RCOutput.cpp b/libraries/AP_HAL_ChibiOS/RCOutput.cpp
-index eeb45f7c53..9883ac9dd8 100644
+index eeb45f7c53..e655bef914 100644
 --- a/libraries/AP_HAL_ChibiOS/RCOutput.cpp
 +++ b/libraries/AP_HAL_ChibiOS/RCOutput.cpp
 @@ -2465,7 +2465,8 @@ void RCOutput::safety_update(void)
@@ -40,3 +40,13 @@ index eeb45f7c53..9883ac9dd8 100644
      if (safety_pressed) {
          AP_BoardConfig *brdconfig = AP_BoardConfig::get_singleton();
          if (safety_press_count < UINT8_MAX) {
+@@ -2477,6 +2478,9 @@ void RCOutput::safety_update(void)
+             } else {
+                 safety_state = AP_HAL::Util::SAFETY_ARMED;
+             }
++            // CUSTOM CHANGE: Prevent double-toggle by maxing out the counter
++            // so it waits for a button release before counting again.
++            safety_press_count = UINT8_MAX;
+         }
+     } else {
+         safety_press_count = 0;
